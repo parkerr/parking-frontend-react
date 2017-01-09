@@ -18,7 +18,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to React</h2>
         </div>
-            <svg viewBox="0 0 1200 1200">
+            <svg viewBox="0 0 955 600">
         {this.state.data.map((ele,pos) => {
             console.log(ele)
             if (ele.type === 'rect'){
@@ -26,7 +26,7 @@ class App extends Component {
               
               <rect key={pos} x={ele.x} y={ele.y - 662.59839} width={ele.width} height={ele.height} strokeWidth={ele.attr.stroke.width} stroke={ele.attr.stroke} fill={ele.attr.fill}/>
               )} else {
-                  return (<path key={pos} d={ele.path} strokeWidth={"1px"} stroke={"#000000"} fill={ele.fill}/>)
+                  return (<path key={pos} d={ele.path} strokeWidth={"2px"} stroke={"#000000"} fill={ele.fill}/>)
               }
           
           })}
