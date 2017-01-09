@@ -21,9 +21,10 @@ class Spaces extends Component {
     super(props, context)
 	var date1 = new Date()
     date1.setHours(0,0,0,0)	
-    this.state = {spaces: [], loading: true, date: date1, searchStatus: getStoredUserData(), data: data}
+    this.state = {spaces: [], loading: true, date: date1, searchStatus: getStoredUserData(), data: data, displayStatus: 'DISPLAY'}
     this.edit = this.edit.bind(this)
     this.updateSearchStatus = this.updateSearchStatus.bind(this)
+    this.updateDisplayStatus = this.updateDisplayStatus.bind(this)
 	this.moveback = this.moveback.bind(this)
 	this.moveforward = this.moveforward.bind(this)
 	this.clicked = this.clicked.bind(this)
@@ -102,6 +103,10 @@ edit(e) {
      this.setState({...this.state, searchStatus: e.target.value})
   }
   
+  updateDisplayStatus(e) {   
+     this.setState({...this.state, displayStatus: e.target.value})
+  }
+  
   filter(spaces) {
     const status = this.state.searchStatus
 	  if (status === ''){
@@ -126,7 +131,17 @@ edit(e) {
 	const filteredSpaces = this.filter(this.state.spaces)
     return (
     <div className="container">
-        <div className="row"><button type="button" className="btn btn-default btn-sm" onClick={ this.moveback } >{'<'}</button> {this.state.date.toDateString() } <button className="btn btn-default btn-sm" onClick={ this.moveforward} >{'>'}</button></div>
+        <div className="search-form form-inline">
+            <div className="row"><button type="button" className="btn btn-default btn-sm" onClick={ this.moveback } >{'<'}</button> {this.state.date.toDateString() } <button className="btn btn-default btn-sm" onClick={ this.moveforward} >{'>'}</button>
+						<select id="filter-status" className="form-control col-xs-2 col-md-4 col-sm-5 col-lg-4" value={ this.state.displayStatus } onChange={ this.updateDisplayStatus }>
+							<option value="DISPLAY">Display</option>
+							<option value="EDIT">Edit</option>
+							<option value="BOTH">Both</option>
+						</select>
+            </div>
+    </div>
+        <div style={{marginTop: 5 + 'px'}}></div>
+        <div style={this.state.displayStatus === 'EDIT' || this.state.displayStatus === 'BOTH' ? {display: 'inline'} : {display: 'none'}}>
 			<div className="search-form form-inline">
 				<div className="row">
 					<div className="form-group:">
@@ -147,15 +162,15 @@ edit(e) {
 			</div>
 		<div style={{marginTop: 5 + 'px'}}>
 	</div>
-	<div className="row">
-            { filteredSpaces.map(space => {
-              return (
-		<div id="parent" key={space.number}><button onClick={ this.edit } id={space.number} key={space.number} type="button" className={space.availableOn.indexOf(this.state.date.toISOString()) > -1 ? "btn btn-success col-md-1 col-xs-4" : "btn btn-default col-md-1 col-xs-4"}>{space.number}</button></div>
-              )
-            }) }
-	</div>	
-	<div>		
-		<svg viewBox="0 0 955 390">
+<div className="row">
+        { filteredSpaces.map(space => {
+          return (
+	<div id="parent" key={space.number}><button onClick={ this.edit } id={space.number} key={space.number} type="button" className={space.availableOn.indexOf(this.state.date.toISOString()) > -1 ? "btn btn-success col-md-1 col-xs-4" : "btn btn-default col-md-1 col-xs-4"}>{space.number}</button></div>
+          )
+        }) }
+</div></div>	
+	<div style={this.state.displayStatus === 'DISPLAY' || this.state.displayStatus === 'BOTH' ? {display: 'inline'} : {display: 'none'}}>		
+		<svg viewBox="0 0 960 390">
 			{this.state.data.map((ele,pos) => {
 				if (ele.type === 'rect'){
 				return (
@@ -167,7 +182,7 @@ edit(e) {
           })}
 		</svg>
 	</div>		
-        
+       
 	</div>
    )}
 }
