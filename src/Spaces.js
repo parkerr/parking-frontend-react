@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import * as config from './config'
 import request from 'superagent'
 import data from './Data';
-
+import Space from './Space';
 
 
 function updateStoredUserData(searchStatus) {
@@ -26,7 +26,7 @@ class Spaces extends Component {
     this.updateSearchStatus = this.updateSearchStatus.bind(this)
 	this.moveback = this.moveback.bind(this)
 	this.moveforward = this.moveforward.bind(this)
-	this.entered = this.entered.bind(this)
+	this.clicked = this.clicked.bind(this)
   }
 
 moveback(){
@@ -41,6 +41,10 @@ moveforward(){
   date1.setDate(date1.getDate()+1)
   date1.setHours(0,0,0,0)
   this.setState({...this.state, date: date1 })
+}
+
+clicked(space){
+console.log(space.space)
 }
 
 edit(e) {
@@ -153,11 +157,9 @@ edit(e) {
 	<div>		
 		<svg viewBox="0 0 955 390">
 			{this.state.data.map((ele,pos) => {
-				console.log(ele)
 				if (ele.type === 'rect'){
 				return (
-              
-				<rect key={pos} x={ele.x} y={ele.y - 662.59839} width={ele.width} height={ele.height} strokeWidth={ele.attr.stroke.width} stroke={ele.attr.stroke} fill={ele.attr.fill}/>
+                <Space space={ ele } key={pos} clicked={this.clicked} available={this.state.spaces.filter( space => space.number === ele.space)} date={this.state.date}/>
               )} else {
                   return (<path key={pos} d={ele.path} strokeWidth={"2px"} stroke={"#000000"} fill={ele.fill}/>)
               }
