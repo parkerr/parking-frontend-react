@@ -5,7 +5,7 @@ import * as config from './config'
 import request from 'superagent'
 import data from './Data';
 import Space from './Space';
-
+import {Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon} from 'react-bootstrap';
 
 function updateStoredUserData(searchStatus) {
     window.localStorage['searchStatus'] = searchStatus
@@ -129,17 +129,31 @@ edit(e) {
       return <div className="activity-indicator"><i className="fa fa-spinner fa-spin"></i> <span>Loading</span></div>
     }
 	const filteredSpaces = this.filter(this.state.spaces)
-    return (
-    <div className="container">
-        <div className="search-form form-inline">
-            <div className="row"><button type="button" className="btn btn-default btn-sm" onClick={ this.moveback } >{'<'}</button> {this.state.date.toDateString() } <button className="btn btn-default btn-sm" onClick={ this.moveforward} >{'>'}</button>
-						<select id="filter-status" className="form-control col-xs-2 col-md-4 col-sm-5 col-lg-4" value={ this.state.displayStatus } onChange={ this.updateDisplayStatus }>
+    return (<div>
+	<Navbar collapseOnSelect>
+    <Navbar.Header>
+      <Navbar.Brand>
+        <a href="#">GSC Parking</a>
+      </Navbar.Brand>
+	  <Navbar.Toggle />
+    </Navbar.Header>
+    <Navbar.Collapse>
+      <Nav>
+        <NavItem eventKey={1} href="#" onClick={ this.moveback }> Move Back A Day <Glyphicon glyph="glyphicon glyphicon-minus"/></NavItem>
+        <NavItem eventKey={2} href="#" onClick={ this.moveforward }>Move Forward A Day <Glyphicon glyph="glyphicon glyphicon-plus" /></NavItem>
+	</Nav>
+		<Nav pullRight>
+		<NavItem> <select id="filter-status" className="dropdown-toggle" value={ this.state.displayStatus } onChange={ this.updateDisplayStatus }>
 							<option value="DISPLAY">Display</option>
 							<option value="EDIT">Edit</option>
 							<option value="BOTH">Both</option>
-						</select>
-            </div>
-    </div>
+						</select></NavItem>
+      </Nav>
+    </Navbar.Collapse>
+	</Navbar>
+       <h4 className="text-center">Available spaces shown in green for {this.state.date.toDateString() }</h4>	
+    <div className="container">
+
         <div style={{marginTop: 5 + 'px'}}></div>
         <div style={this.state.displayStatus === 'EDIT' || this.state.displayStatus === 'BOTH' ? {display: 'inline'} : {display: 'none'}}>
 			<div className="search-form form-inline">
@@ -183,7 +197,7 @@ edit(e) {
 		</svg>
 	</div>		
        
-	</div>
+	</div></div>
    )}
 }
 export default Spaces
