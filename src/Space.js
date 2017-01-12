@@ -5,26 +5,28 @@ class Space extends Component {
 
   constructor(props, context) {
     super(props, context)
-	this.state = {space: this.props.space}
+	this.state = {space: this.props.space, available: this.props.available}
 	this.clicked = this.clicked.bind(this)
   }
 
+   componentWillReceiveProps(nextProps) {
+	this.state = {space: nextProps.space, available: nextProps.available}	
+  }
+  
   clicked(e) {
-    this.props.clicked(this.state.space)	
+	this.setState({...this.state, available: !this.state.available})  
+    this.props.clicked(this.state)	
   }
   
   render() {
 	const space = this.props.space
 	let colour = "#808080"
 	
-	if(this.props.available[0]  === undefined){}
-	else {
-		
+	
 		//Work out the colour
-	colour =  this.props.available[0].availableOn.indexOf(this.props.date.toISOString()) > -1 ? "#5cb85c" : "#E0E0E0 "
+	colour =  this.state.available ? "#5cb85c" : "#E0E0E0 "
+	
 
-	}
-		
 		
 	return (
        

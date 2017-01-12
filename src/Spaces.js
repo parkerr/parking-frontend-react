@@ -5,7 +5,7 @@ import * as config from './config'
 import request from 'superagent'
 import data from './Data';
 import Space from './Space';
-import {Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon} from 'react-bootstrap';
+import {Navbar, Nav, NavItem, Glyphicon} from 'react-bootstrap';
 
 function updateStoredUserData(searchStatus) {
     window.localStorage['searchStatus'] = searchStatus
@@ -23,11 +23,11 @@ class Spaces extends Component {
     date1.setHours(0,0,0,0)	
     this.state = {spaces: [], loading: true, date: date1, searchStatus: getStoredUserData(), data: data, displayStatus: 'DISPLAY'}
     this.edit = this.edit.bind(this)
+	this.editfromimage = this.editfromimage.bind(this)
     this.updateSearchStatus = this.updateSearchStatus.bind(this)
     this.updateDisplayStatus = this.updateDisplayStatus.bind(this)
 	this.moveback = this.moveback.bind(this)
 	this.moveforward = this.moveforward.bind(this)
-	this.clicked = this.clicked.bind(this)
   }
 
 moveback(){
@@ -44,10 +44,6 @@ moveforward(){
   this.setState({...this.state, date: date1 })
 }
 
-clicked(space){
-console.log(space.space)
-}
-
 edit(e) {
 
 	if(e.target.className === "btn btn-default col-md-1 col-xs-4"){
@@ -55,7 +51,7 @@ edit(e) {
 	} else {
 	  	action = '/makeunavailableon/'
 	}
-
+	
     if (config.DEVMODE){
      var url = 'http://localhost:3000/api/spaces/' + e.target.id + action + this.state.date.toISOString()
     }else{
@@ -77,6 +73,40 @@ edit(e) {
       })
   }
 
+  editfromimage(e) {
+
+console.log(e.available)
+	if(e.available){
+		var action = '/makeunavailableon/'
+	} else {
+	  	action = '/makeavailableon/'
+	}
+	
+	
+    if (config.DEVMODE){
+     var url = 'http://localhost:3000/api/spaces/' + e.space.space + action + this.state.date.toISOString()
+    }else{
+         url = 'https://gsc-parking.herokuapp.com/api/spaces/' + e.space.space + action + this.state.date.toISOString()
+    
+    }
+	  
+	  
+      request
+      .put(url)
+      .end((err, res) => {
+        if (err) {
+          console.error(err)
+        }
+        else {
+          const parsed = JSON.parse(res.text)
+          this.setState({...this.state, loading: false, spaces: parsed})
+        }
+      })
+  }
+  
+  
+  
+  
   componentWillMount() {
     if (config.DEVMODE){
      var url = 'http://localhost:3000/api/spaces'
@@ -122,6 +152,14 @@ edit(e) {
  return true
   })}
 
+  
+  isAvailable(ele) {
+	//first get the matching space in the data ( with the dates)
+	let av = this.state.spaces.filter( space => space.number === ele.space) 
+	if (av[0] === undefined){return false}
+	return av[0].availableOn.indexOf(this.state.date.toISOString()) > -1
+}
+  
 
   render() {
 
@@ -188,7 +226,7 @@ edit(e) {
 			{this.state.data.map((ele,pos) => {
 				if (ele.type === 'rect'){
 				return (
-                <Space space={ ele } key={pos} clicked={this.clicked} available={this.state.spaces.filter( space => space.number === ele.space)} date={this.state.date}/>
+                <Space space={ ele } key={pos} clicked={ this.editfromimage} available={this.isAvailable(ele)} date={this.state.date}/>
               )} else {
                   return (<path key={pos} d={ele.path} strokeWidth={"2px"} stroke={"#000000"} fill={ele.fill}/>)
               }
