@@ -222,7 +222,7 @@ console.log(e.available)
         }) }
 </div></div>	
 	<div style={this.state.displayStatus === 'DISPLAY' || this.state.displayStatus === 'BOTH' ? {display: 'inline'} : {display: 'none'}}>		
-		<svg viewBox="0 0 960 390">
+		<svg  width="960" height="390" style={{"width": "100%", "border": "1px solid black"}} viewBox="0 0 960 390"  preserveAspectRatio="xMinYMin meet">
 			{this.state.data.map((ele,pos) => {
 				if (ele.type === 'rect'){
 				return (
